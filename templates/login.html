@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}SecureVault - Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-shield-alt"></i> SecureVault</h1>
+        <p>Unlock your secure password vault</p>
+    </div>
+
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 48px;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Welcome Back</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6; font-size: 1.125rem;">
+                Sign in to your SecureVault account to access your credentials and email aliases.
+            </p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" style="display: block; margin-bottom: 12px; font-weight: 600; color: white; font-size: 0.875rem;">
+                    <i class="fas fa-envelope"></i> Email Address
+                </label>
+                <input type="email" id="email" name="email" class="form-control" 
+                       placeholder="Enter your email address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password" style="display: block; margin-bottom: 12px; font-weight: 600; color: white; font-size: 0.875rem;">
+                    <i class="fas fa-key"></i> Password
+                </label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       placeholder="Enter your password" required>
+                <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 8px; display: block;">
+                    This password unlocks your encrypted vault
+                </small>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <button type="submit" class="btn" style="font-size: 16px; padding: 16px 40px;">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </div>
+        </form>
+
+        <div style="text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <p style="color: rgba(255, 255, 255, 0.7);">
+                Don't have an account? 
+                <a href="/register" style="color: #667eea; text-decoration: none; font-weight: 500;">Create one here</a>
+            </p>
+        </div>
+
+        <div id="alertContainer"></div>
+    </div>
+
+    <div class="card" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.2);">
+        <h3 style="margin-bottom: 24px; color: white; font-size: 1.25rem; font-weight: 600;">
+            <i class="fas fa-info-circle"></i> Security Features
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-lock" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Encrypted Storage</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">All your passwords are encrypted and stored securely</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-eye-slash" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Hidden Passwords</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">Passwords are hidden by default for extra security</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-shield-alt" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Local Only</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">Your data never leaves your device</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const alertContainer = document.getElementById('alertContainer');
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        
+        // Validation
+        if (!email || !password) {
+            showAlert('Please enter both email and password', 'error');
+            return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showAlert('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="loading"></div> Signing In...';
+        submitBtn.disabled = true;
+        
+        // Submit login
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                email: email,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Sign in successful! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = data.redirect || '/';
+                }, 1500);
+            } else {
+                showAlert(data.message || 'Invalid email or password', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('An error occurred during login', 'error');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+    
+    function showAlert(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+        const alertHtml = `<div class="alert ${alertClass}">${message}</div>`;
+        alertContainer.innerHTML = alertHtml;
+        
+        if (type === 'success') {
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+    }
+});
+</script>
+{% endblock %} 

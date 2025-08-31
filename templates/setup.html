@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}SecureVault - Setup{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-shield-alt"></i> SecureVault</h1>
+        <p>Next-generation password management with email aliases</p>
+    </div>
+
+    <div class="card">
+        <div style="text-align: center; margin-bottom: 48px;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h2 style="color: white; margin-bottom: 16px; font-size: 1.75rem; font-weight: 600;">Welcome to SecureVault</h2>
+            <p style="color: rgba(255, 255, 255, 0.7); line-height: 1.6; font-size: 1.125rem;">
+                Set up your secure password vault with advanced email alias support. 
+                Your master email will be used to create unique aliases for each service.
+            </p>
+        </div>
+
+        <form id="setupForm">
+            <div class="form-group">
+                <label for="master_email" style="display: block; margin-bottom: 12px; font-weight: 600; color: white; font-size: 0.875rem;">
+                    <i class="fas fa-envelope"></i> Master Email Address
+                </label>
+                <input type="email" id="master_email" name="master_email" class="form-control" 
+                       placeholder="your.email@gmail.com" required>
+                <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 8px; display: block;">
+                    This email will be used to create aliases like: your.email+random123@gmail.com
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="master_password" style="display: block; margin-bottom: 12px; font-weight: 600; color: white; font-size: 0.875rem;">
+                    <i class="fas fa-key"></i> Master Password
+                </label>
+                <input type="password" id="master_password" name="master_password" class="form-control" 
+                       placeholder="Create a strong master password" required>
+                <small style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin-top: 8px; display: block;">
+                    This password will encrypt all your stored credentials
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm_password" style="display: block; margin-bottom: 12px; font-weight: 600; color: white; font-size: 0.875rem;">
+                    <i class="fas fa-check-circle"></i> Confirm Master Password
+                </label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" 
+                       placeholder="Confirm your master password" required>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <button type="submit" class="btn" style="font-size: 16px; padding: 16px 40px;">
+                    <i class="fas fa-rocket"></i> Initialize Vault
+                </button>
+            </div>
+        </form>
+
+        <div id="alertContainer"></div>
+    </div>
+
+    <div class="card" style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.2);">
+        <h3 style="margin-bottom: 24px; color: white; font-size: 1.25rem; font-weight: 600;">
+            <i class="fas fa-info-circle"></i> How It Works
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-plus" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Email Aliases</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">Each service gets a unique email alias using your master email with + notation</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-lock" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Secure Storage</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">All passwords are encrypted and stored locally on your device</p>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+                    <i class="fas fa-random" style="color: white; font-size: 1.25rem;"></i>
+                </div>
+                <h4 style="color: white; margin-bottom: 8px; font-weight: 600;">Auto Generation</h4>
+                <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">Generate strong passwords and email aliases with one click</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const setupForm = document.getElementById('setupForm');
+    const alertContainer = document.getElementById('alertContainer');
+    
+    setupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const masterEmail = document.getElementById('master_email').value;
+        const masterPassword = document.getElementById('master_password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        // Validation
+        if (!masterEmail || !masterPassword || !confirmPassword) {
+            showAlert('Please fill in all fields', 'error');
+            return;
+        }
+        
+        if (masterPassword !== confirmPassword) {
+            showAlert('Passwords do not match', 'error');
+            return;
+        }
+        
+        if (masterPassword.length < 8) {
+            showAlert('Master password must be at least 8 characters long', 'error');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="loading"></div> Initializing...';
+        submitBtn.disabled = true;
+        
+        // Submit setup
+        fetch('/setup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                master_email: masterEmail,
+                master_password: masterPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Vault initialized successfully! Redirecting...', 'success');
+                setTimeout(() => {
+                    window.location.href = data.redirect;
+                }, 1500);
+            } else {
+                showAlert(data.message || 'Setup failed', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('An error occurred during setup', 'error');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+    
+    function showAlert(message, type) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+        const alertHtml = `<div class="alert ${alertClass}">${message}</div>`;
+        alertContainer.innerHTML = alertHtml;
+        
+        if (type === 'success') {
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 3000);
+        }
+    }
+});
+</script>
+{% endblock %} 

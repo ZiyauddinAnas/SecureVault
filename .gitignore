@@ -1,0 +1,13 @@
+# Ignore virtual environment
+myenv/
+
+# Ignore log files
+*.log
+
+# Ignore local database
+*.db
+
+# Optional: Ignore compiled files
+__pycache__/
+*.pyc
+logs/
